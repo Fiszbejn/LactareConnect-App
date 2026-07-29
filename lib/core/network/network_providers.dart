@@ -1,14 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../session/session_controller.dart';
 import 'api_constants.dart';
 import 'auth_interceptor.dart';
 import 'token_storage.dart';
-
-final tokenStorageProvider = Provider<TokenStorage>((ref) {
-  return TokenStorage(const FlutterSecureStorage());
-});
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
@@ -19,7 +15,12 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   );
 
-  dio.interceptors.add(AuthInterceptor(ref.read(tokenStorageProvider)));
+  dio.interceptors.add(
+    AuthInterceptor(
+      ref.read(tokenStorageProvider),
+      onUnauthorized: () => ref.read(sessionControllerProvider.notifier).logOut(),
+    ),
+  );
 
   return dio;
 });
