@@ -7,6 +7,7 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../session/session_controller.dart';
 import 'app_routes.dart';
+import 'home_shell.dart';
 import 'placeholder_pages.dart';
 
 /// Rotas acessíveis sem sessão válida — usadas tanto pra decidir se um
@@ -69,9 +70,56 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.cadastro,
         builder: (context, state) => const CadastroScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => const HomePlaceholderPage(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            HomeShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) =>
+                    const TabPlaceholderPage(title: 'Início'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.doar,
+                builder: (context, state) =>
+                    const TabPlaceholderPage(title: 'Doar'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.chat,
+                builder: (context, state) =>
+                    const TabPlaceholderPage(title: 'Chat'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.recompensas,
+                builder: (context, state) =>
+                    const TabPlaceholderPage(title: 'Recompensas'),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.conta,
+                builder: (context, state) =>
+                    const TabPlaceholderPage(title: 'Conta'),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

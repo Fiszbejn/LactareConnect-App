@@ -12,11 +12,24 @@ class SplashPlaceholderPage extends StatelessWidget {
   }
 }
 
-class HomePlaceholderPage extends StatelessWidget {
-  const HomePlaceholderPage({super.key});
+/// Placeholder de conteúdo de uma aba da home, até a feature real
+/// (doacao/conta/faq/chat/recompensas) ser implementada — ver
+/// `HomeShell` pra a casca com a tab bar.
+class TabPlaceholderPage extends StatelessWidget {
+  const TabPlaceholderPage({required this.title, super.key});
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('TODO: home da doadora')));
+    return Scaffold(
+      body: Center(
+        child: Text(
+          '$title\n(em breve)',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+    );
   }
 }
