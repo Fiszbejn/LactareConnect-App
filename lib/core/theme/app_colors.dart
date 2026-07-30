@@ -16,6 +16,7 @@ class AppColors {
   static const bg = Color(0xFFFAFAF7);
   static const ink = Color(0xFF1A1A1A);
   static const muted = Color(0xFF6B6B6B);
+  static const faint = Color(0xFF9A9A9A);
   static const line = Color(0xFFD6D6D6);
 
   // Status (checklist de exames, feedback de FAQ, etc.)
