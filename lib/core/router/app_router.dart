@@ -2,9 +2,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/presentation/cadastro_screen.dart';
+import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/welcome_screen.dart';
 import '../session/session_controller.dart';
 import 'app_routes.dart';
 import 'placeholder_pages.dart';
+
+/// Rotas acessíveis sem sessão válida — usadas tanto pra decidir se um
+/// usuário deslogado pode ficar onde está quanto pra bloquear um usuário
+/// já logado de voltar pra elas.
+const _unauthenticatedRoutes = {
+  AppRoutes.welcome,
+  AppRoutes.login,
+  AppRoutes.cadastro,
+};
 
 /// Ponte entre o `SessionController` (Riverpod) e o `refreshListenable`
 /// do go_router (que espera um [Listenable]/`ChangeNotifier` clássico).
@@ -31,11 +43,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       }
 
       if (!session.isAuthenticatedAsNutriz) {
-        return location == AppRoutes.login ? null : AppRoutes.login;
+        return _unauthenticatedRoutes.contains(location)
+            ? null
+            : AppRoutes.welcome;
       }
 
       final isOnAuthOnlyRoute =
-          location == AppRoutes.splash || location == AppRoutes.login;
+          location == AppRoutes.splash || _unauthenticatedRoutes.contains(location);
       return isOnAuthOnlyRoute ? AppRoutes.home : null;
     },
     routes: [
@@ -44,8 +58,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SplashPlaceholderPage(),
       ),
       GoRoute(
+        path: AppRoutes.welcome,
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.login,
-        builder: (context, state) => const LoginPlaceholderPage(),
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.cadastro,
+        builder: (context, state) => const CadastroScreen(),
       ),
       GoRoute(
         path: AppRoutes.home,
