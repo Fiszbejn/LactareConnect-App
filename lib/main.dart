@@ -18,6 +18,7 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'LactareConnect',
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: router,
       locale: const Locale('pt', 'BR'),
