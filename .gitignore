@@ -1,3 +1,6 @@
+# Notas locais, fora do controle de versão
+/docs/
+
 # Miscellaneous
 *.class
 *.log
