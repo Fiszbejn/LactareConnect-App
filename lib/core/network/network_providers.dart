@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../session/session_controller.dart';
@@ -14,6 +15,15 @@ final dioProvider = Provider<Dio>((ref) {
       receiveTimeout: ApiConstants.receiveTimeout,
     ),
   );
+
+  // Só em debug: imprime request/response/erro no console do `flutter run`.
+  // Sem isso, uma falha de rede vira só a mensagem genérica da UI — não dá
+  // pra saber se foi timeout, conexão recusada, 500 etc.
+  if (kDebugMode) {
+    dio.interceptors.add(
+      LogInterceptor(requestBody: true, responseBody: true),
+    );
+  }
 
   dio.interceptors.add(
     AuthInterceptor(
