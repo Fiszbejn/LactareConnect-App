@@ -12,9 +12,9 @@ class CadastroRepositoryImpl implements CadastroRepository {
   final Dio _dio;
 
   @override
-  Future<void> register(CadastroRequest request) async {
+  Future<int> registerNutriz(CadastroRequest request) async {
     try {
-      final nutrizResponse = await _dio.post<Map<String, dynamic>>(
+      final response = await _dio.post<Map<String, dynamic>>(
         '/nutrizes',
         data: {
           'nome': request.nome,
@@ -25,8 +25,15 @@ class CadastroRepositoryImpl implements CadastroRepository {
           'senha': request.senha,
         },
       );
-      final nutrizId = nutrizResponse.data!['id'] as int;
+      return response.data!['id'] as int;
+    } on DioException catch (e) {
+      throw _mapCadastroError(e);
+    }
+  }
 
+  @override
+  Future<void> registerEndereco(int nutrizId, CadastroRequest request) async {
+    try {
       await _dio.post<Map<String, dynamic>>(
         '/enderecos',
         data: {
@@ -40,18 +47,22 @@ class CadastroRepositoryImpl implements CadastroRepository {
         },
       );
     } on DioException catch (e) {
-      if (e.response?.statusCode == 409) {
-        throw const AuthFailure('Já existe uma conta com este CPF ou e-mail.');
-      }
-      if (e.response?.statusCode == 400) {
-        throw const AuthFailure(
-          'Verifique os dados informados e tente novamente.',
-        );
-      }
-      throw const AuthFailure(
-        'Não foi possível concluir o cadastro. Verifique sua conexão e tente novamente.',
+      throw _mapCadastroError(e);
+    }
+  }
+
+  AuthFailure _mapCadastroError(DioException e) {
+    if (e.response?.statusCode == 409) {
+      return const AuthFailure('Já existe uma conta com este CPF ou e-mail.');
+    }
+    if (e.response?.statusCode == 400) {
+      return const AuthFailure(
+        'Verifique os dados informados e tente novamente.',
       );
     }
+    return const AuthFailure(
+      'Não foi possível concluir o cadastro. Verifique sua conexão e tente novamente.',
+    );
   }
 }
 
