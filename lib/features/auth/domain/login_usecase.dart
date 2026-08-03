@@ -15,7 +15,11 @@ class LoginUseCase {
 
   Future<void> call({required String email, required String senha}) async {
     final result = await _repository.login(email: email, senha: senha);
-    await _sessionController.logIn(token: result.token, tipo: result.tipo);
+    await _sessionController.logIn(
+      token: result.token,
+      tipo: result.tipo,
+      nutrizId: result.id,
+    );
   }
 }
 

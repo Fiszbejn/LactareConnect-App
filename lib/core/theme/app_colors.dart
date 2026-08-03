@@ -18,6 +18,7 @@ class AppColors {
   static const muted = Color(0xFF6B6B6B);
   static const faint = Color(0xFF9A9A9A);
   static const line = Color(0xFFD6D6D6);
+  static const lineSoft = Color(0xFFE8E8E5);
 
   // Status (checklist de exames, feedback de FAQ, etc.)
   static const statusOkText = Color(0xFF1B7F79);
@@ -26,4 +27,11 @@ class AppColors {
   static const statusPendingBg = Color(0xFFFFF7E8);
   static const statusErrorText = Color(0xFFFF4858);
   static const statusErrorBg = Color(0xFFFFEEF0);
+
+  // Acentos "opcionais" do design system, usados só pra diferenciar
+  // categorias em listas filtráveis (ex: chips de categoria do FAQ).
+  static const accentTeal = Color(0xFF1B7F79);
+  static const accentPink = Color(0xFFF25CA2);
+  static const accentAmber = Color(0xFFF2B33D);
+  static const categoryAccents = [brand, brandLight, accentTeal, accentPink, accentAmber];
 }

@@ -19,15 +19,20 @@ class SessionController extends Notifier<SessionState> {
   Future<void> _restoreFromStorage() async {
     final token = await _tokenStorage.readToken();
     final tipo = await _tokenStorage.readTipo();
+    final nutrizId = await _tokenStorage.readNutrizId();
 
-    state = (token != null && tipo != null)
-        ? SessionState.authenticated(token: token, tipo: tipo)
+    state = (token != null && tipo != null && nutrizId != null)
+        ? SessionState.authenticated(token: token, tipo: tipo, nutrizId: nutrizId)
         : SessionState.unauthenticated;
   }
 
-  Future<void> logIn({required String token, required String tipo}) async {
-    await _tokenStorage.saveSession(token: token, tipo: tipo);
-    state = SessionState.authenticated(token: token, tipo: tipo);
+  Future<void> logIn({
+    required String token,
+    required String tipo,
+    required int nutrizId,
+  }) async {
+    await _tokenStorage.saveSession(token: token, tipo: tipo, nutrizId: nutrizId);
+    state = SessionState.authenticated(token: token, tipo: tipo, nutrizId: nutrizId);
   }
 
   Future<void> logOut() async {
