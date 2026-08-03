@@ -8,9 +8,10 @@ import '../domain/pergunta_frequente.dart';
 import 'faq_controller.dart';
 
 /// Tela de FAQ — é o conteúdo da aba "Início" (`screens-faq.jsx` usa
-/// `tab={0}` no design; ver checkpoint de status pra esse achado). Variante
-/// confirmada com o usuário: categorizada, com busca + accordion (não a
-/// lista simples).
+/// `tab={0}` no design; ver checkpoint de status pra esse achado). Híbrido
+/// combinando as duas variantes do wireframe a pedido do usuário: banner
+/// com gradiente + badges numerados em círculo com seta (da variante lista
+/// simples) mantendo busca, categorias e accordion (da variante categorizada).
 class FaqScreen extends ConsumerStatefulWidget {
   const FaqScreen({super.key});
 
@@ -75,6 +76,10 @@ class _FaqScreenState extends ConsumerState<FaqScreen> {
                 ],
               ),
             ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
+              child: _FaqBanner(),
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
               child: TextField(
@@ -138,6 +143,47 @@ class _ErroCarregarFaq extends StatelessWidget {
             OutlinedButton(onPressed: onRetry, child: const Text('Tentar novamente')),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _FaqBanner extends StatelessWidget {
+  const _FaqBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.brand, AppColors.brandLight],
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Você está bem informada,\nvocê doa melhor.',
+            style: textTheme.titleSmall?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              height: 1.3,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Reunimos as perguntas mais comuns das doadoras.',
+            style: textTheme.bodySmall?.copyWith(
+              color: Colors.white.withValues(alpha: 0.9),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -231,27 +277,19 @@ class _FaqContent extends StatelessWidget {
             ),
           )
         else
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.line),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: [
-                for (var i = 0; i < filtradas.length; i++)
-                  _FaqAccordionItem(
-                    indice: i + 1,
-                    pergunta: filtradas[i],
-                    expandido: expandedId == filtradas[i].id,
-                    jaRespondida: perguntasRespondidas.contains(filtradas[i].id),
-                    isUltimo: i == filtradas.length - 1,
-                    onTap: () => onToggleExpand(filtradas[i].id),
-                    onFeedback: (util) => onFeedback(filtradas[i].id, util),
-                  ),
-              ],
-            ),
+          Column(
+            children: [
+              for (var i = 0; i < filtradas.length; i++)
+                _FaqAccordionItem(
+                  indice: i + 1,
+                  pergunta: filtradas[i],
+                  expandido: expandedId == filtradas[i].id,
+                  jaRespondida: perguntasRespondidas.contains(filtradas[i].id),
+                  isUltimo: i == filtradas.length - 1,
+                  onTap: () => onToggleExpand(filtradas[i].id),
+                  onFeedback: (util) => onFeedback(filtradas[i].id, util),
+                ),
+            ],
           ),
         const SizedBox(height: 18),
         _FaqChatCta(
@@ -359,41 +397,68 @@ class _FaqAccordionItem extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
         decoration: BoxDecoration(
           color: expandido ? AppColors.brandTint : Colors.transparent,
-          border: isUltimo
-              ? null
-              : const Border(bottom: BorderSide(color: AppColors.lineSoft)),
+          borderRadius: expandido ? BorderRadius.circular(12) : null,
+          border: !expandido && !isUltimo
+              ? const Border(bottom: BorderSide(color: AppColors.lineSoft))
+              : null,
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Text(
-                indice.toString().padLeft(2, '0'),
-                style: textTheme.labelSmall?.copyWith(
-                  color: expandido ? AppColors.brand : AppColors.faint,
-                  fontWeight: FontWeight.w800,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: const BoxDecoration(
+                    color: AppColors.brandTint,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '$indice',
+                    style: textTheme.labelSmall?.copyWith(
+                      color: AppColors.brand,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 11,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
                     pergunta.pergunta,
                     style: textTheme.bodyMedium?.copyWith(
                       fontWeight: expandido ? FontWeight.w700 : FontWeight.w600,
-                      height: 1.4,
+                      height: 1.35,
                     ),
                   ),
-                  if (expandido) ...[
-                    const SizedBox(height: 8),
+                ),
+                const SizedBox(width: 8),
+                AnimatedRotation(
+                  turns: expandido ? 0.25 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: expandido ? AppColors.brand : AppColors.faint,
+                  ),
+                ),
+              ],
+            ),
+            if (expandido) ...[
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
                       pergunta.resposta,
                       style: textTheme.bodySmall?.copyWith(
@@ -440,21 +505,9 @@ class _FaqAccordionItem extends StatelessWidget {
                         ],
                       ),
                   ],
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4, left: 4),
-              child: AnimatedRotation(
-                turns: expandido ? 0.5 : 0,
-                duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 18,
-                  color: expandido ? AppColors.brand : AppColors.faint,
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
