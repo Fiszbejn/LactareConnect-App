@@ -6,8 +6,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_logo.dart';
 
 /// Tela de entrada do app (fiel ao wireframe `ScreenWelcome` do Claude
-/// Design) — decide entre "Quero ser doadora" (cadastro) e "Já tenho
-/// cadastro" (login). Sem lógica própria, só navegação.
+/// Design) — decide entre "Quero ser uma pessoa doadora" (cadastro) e "Já
+/// tenho cadastro" (login). Sem lógica própria, só navegação.
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
@@ -51,14 +51,14 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Doe leite materno e ajude bebês que mais precisam. '
-                'Você não está sozinha nessa jornada.',
+                'Doar leite humano ajuda bebês que mais precisam a ter um '
+                'futuro mais saudável. Você não está sozinha nessa jornada.',
                 style: textTheme.bodyLarge?.copyWith(color: AppColors.muted),
               ),
               const Spacer(),
               FilledButton(
                 onPressed: () => context.go(AppRoutes.cadastro),
-                child: const Text('Quero ser doadora'),
+                child: const Text('Quero ser uma pessoa doadora'),
               ),
               const SizedBox(height: 10),
               TextButton(

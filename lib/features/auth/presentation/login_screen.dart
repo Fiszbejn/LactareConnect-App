@@ -144,7 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Ainda não é doadora? ',
+                      'Ainda não é uma pessoa doadora? ',
                       style: textTheme.bodyMedium?.copyWith(
                         color: AppColors.muted,
                       ),

@@ -285,7 +285,7 @@ class _CadastroScreenState extends ConsumerState<CadastroScreen> {
         ),
         const SizedBox(height: 6),
         Text(
-          'Aceitamos doadoras a partir de 18 anos',
+          'Aceitamos pessoas doadoras a partir de 18 anos',
           style: textTheme.bodySmall,
         ),
       ],

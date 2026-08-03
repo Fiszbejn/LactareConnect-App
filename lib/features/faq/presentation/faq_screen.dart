@@ -178,7 +178,7 @@ class _FaqBanner extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Reunimos as perguntas mais comuns das nossas doadoras.',
+            'Reunimos as perguntas mais comuns entre as pessoas doadoras.',
             style: textTheme.bodySmall?.copyWith(
               color: Colors.white.withValues(alpha: 0.9),
             ),
