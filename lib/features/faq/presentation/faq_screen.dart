@@ -169,7 +169,7 @@ class _FaqBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Você está bem informada,\nvocê doa melhor.',
+            'Nenhuma dúvida é boba,\nquando o assunto é o seu bebê.',
             style: textTheme.titleSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,
@@ -178,7 +178,7 @@ class _FaqBanner extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Reunimos as perguntas mais comuns das doadoras.',
+            'Reunimos as perguntas mais comuns das nossas doadoras.',
             style: textTheme.bodySmall?.copyWith(
               color: Colors.white.withValues(alpha: 0.9),
             ),
