@@ -169,7 +169,7 @@ class _FaqBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nenhuma dúvida é boba,\nquando o assunto é o seu bebê.',
+            'Nenhuma dúvida é boba\nquando o assunto é ajudar quem mais precisa.',
             style: textTheme.titleSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,
