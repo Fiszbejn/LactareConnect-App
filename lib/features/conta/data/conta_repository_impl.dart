@@ -79,6 +79,30 @@ class ContaRepositoryImpl implements ContaRepository {
   }
 
   @override
+  Future<void> criarEndereco({
+    required int nutrizId,
+    required String cep,
+    required String rua,
+    required String numero,
+    required String bairro,
+    required String cidade,
+    required String uf,
+  }) async {
+    await _dio.post<void>(
+      '/enderecos',
+      data: {
+        'cep': cep,
+        'rua': rua,
+        'numero': numero,
+        'bairro': bairro,
+        'cidade': cidade,
+        'uf': uf,
+        'nutrizId': nutrizId,
+      },
+    );
+  }
+
+  @override
   Future<void> atualizarEndereco({
     required int enderecoId,
     required String cep,

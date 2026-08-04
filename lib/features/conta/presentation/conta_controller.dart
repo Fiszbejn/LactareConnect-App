@@ -8,11 +8,15 @@ import '../domain/preferencias.dart';
 
 /// Agrega as 3 entidades "dono-do-registro" que formam a tela de Conta —
 /// carregadas juntas porque a tela sempre precisa das 3 ao mesmo tempo.
+///
+/// [endereco] é nulo quando a nutriz ainda não tem endereço cadastrado —
+/// no fluxo normal (wizard de cadastro) isso não acontece, mas é um
+/// estado válido pra contas criadas fora desse fluxo.
 class ContaData {
   const ContaData({required this.perfil, required this.endereco, required this.preferencias});
 
   final NutrizPerfil perfil;
-  final Endereco endereco;
+  final Endereco? endereco;
   final Preferencias preferencias;
 }
 
@@ -25,13 +29,15 @@ final contaProvider = FutureProvider<ContaData>((ref) async {
   final repository = ref.watch(contaRepositoryProvider);
   final perfil = await repository.getPerfil(nutrizId);
   final resultados = await Future.wait([
-    repository.getEndereco(perfil.enderecoId!),
+    perfil.enderecoId != null
+        ? repository.getEndereco(perfil.enderecoId!)
+        : Future.value(null),
     repository.getPreferencias(perfil.preferenciasId!),
   ]);
 
   return ContaData(
     perfil: perfil,
-    endereco: resultados[0] as Endereco,
+    endereco: resultados[0] as Endereco?,
     preferencias: resultados[1] as Preferencias,
   );
 });
@@ -79,17 +85,34 @@ class ContaActionsController extends Notifier<AsyncValue<void>> {
     required String cidade,
     required String uf,
   }) {
-    final enderecoId = ref.read(contaProvider).value!.endereco.id;
+    final enderecoAtual = ref.read(contaProvider).value!.endereco;
+    final repository = ref.read(contaRepositoryProvider);
+
+    if (enderecoAtual == null) {
+      final nutrizId = ref.read(sessionControllerProvider).nutrizId!;
+      return _executar(
+        () => repository.criarEndereco(
+          nutrizId: nutrizId,
+          cep: cep,
+          rua: rua,
+          numero: numero,
+          bairro: bairro,
+          cidade: cidade,
+          uf: uf,
+        ),
+      );
+    }
+
     return _executar(
-      () => ref.read(contaRepositoryProvider).atualizarEndereco(
-            enderecoId: enderecoId,
-            cep: cep,
-            rua: rua,
-            numero: numero,
-            bairro: bairro,
-            cidade: cidade,
-            uf: uf,
-          ),
+      () => repository.atualizarEndereco(
+        enderecoId: enderecoAtual.id,
+        cep: cep,
+        rua: rua,
+        numero: numero,
+        bairro: bairro,
+        cidade: cidade,
+        uf: uf,
+      ),
     );
   }
 

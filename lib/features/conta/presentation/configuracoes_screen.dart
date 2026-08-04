@@ -101,8 +101,10 @@ class _ConfiguracoesContent extends ConsumerWidget {
           titulo: 'Endereço',
           linhas: [
             _LinhaConfig(
-              rotulo: 'Endereço de coleta',
-              valor: '${endereco.rua}, ${endereco.numero} · ${endereco.cidade}/${endereco.uf}',
+              rotulo: endereco == null ? 'Adicionar endereço de coleta' : 'Endereço de coleta',
+              valor: endereco == null
+                  ? 'Necessário pra agendar uma coleta'
+                  : '${endereco.rua}, ${endereco.numero} · ${endereco.cidade}/${endereco.uf}',
               multilinha: true,
               onTap: () => _editarEndereco(context, ref, endereco: endereco, actions: actions),
             ),
@@ -268,15 +270,15 @@ class _ConfiguracoesContent extends ConsumerWidget {
   Future<void> _editarEndereco(
     BuildContext context,
     WidgetRef ref, {
-    required Endereco endereco,
+    required Endereco? endereco,
     required ContaActionsController actions,
   }) async {
-    final cepController = TextEditingController(text: endereco.cep);
-    final ruaController = TextEditingController(text: endereco.rua);
-    final numeroController = TextEditingController(text: endereco.numero);
-    final bairroController = TextEditingController(text: endereco.bairro);
-    final cidadeController = TextEditingController(text: endereco.cidade);
-    final ufController = TextEditingController(text: endereco.uf);
+    final cepController = TextEditingController(text: endereco?.cep ?? '');
+    final ruaController = TextEditingController(text: endereco?.rua ?? '');
+    final numeroController = TextEditingController(text: endereco?.numero ?? '');
+    final bairroController = TextEditingController(text: endereco?.bairro ?? '');
+    final cidadeController = TextEditingController(text: endereco?.cidade ?? '');
+    final ufController = TextEditingController(text: endereco?.uf ?? '');
     final formKey = GlobalKey<FormState>();
 
     final confirmado = await showModalBottomSheet<bool>(

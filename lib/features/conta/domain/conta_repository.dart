@@ -18,6 +18,19 @@ abstract class ContaRepository {
     String? senha,
   });
 
+  /// Cria o endereço da nutriz — usado quando `enderecoId` vem nulo do
+  /// perfil (ex: conta criada fora do fluxo normal de cadastro, sem passar
+  /// pelo wizard que já cria o endereço junto).
+  Future<void> criarEndereco({
+    required int nutrizId,
+    required String cep,
+    required String rua,
+    required String numero,
+    required String bairro,
+    required String cidade,
+    required String uf,
+  });
+
   Future<void> atualizarEndereco({
     required int enderecoId,
     required String cep,
