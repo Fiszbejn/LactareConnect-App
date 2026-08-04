@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/cadastro_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
+import '../../features/faq/presentation/faq_screen.dart';
 import '../session/session_controller.dart';
 import 'app_routes.dart';
 import 'home_shell.dart';
@@ -78,8 +79,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.home,
-                builder: (context, state) =>
-                    const TabPlaceholderPage(title: 'Início'),
+                builder: (context, state) => const FaqScreen(),
               ),
             ],
           ),

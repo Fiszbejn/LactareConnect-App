@@ -6,11 +6,19 @@ enum SessionStatus { loading, authenticated, unauthenticated }
 /// `loading` existe porque ler o token do secure storage é assíncrono —
 /// no primeiro frame do app ainda não sabemos se há sessão ou não.
 class SessionState {
-  const SessionState._({required this.status, this.token, this.tipo});
+  const SessionState._({
+    required this.status,
+    this.token,
+    this.tipo,
+    this.nutrizId,
+  });
 
   final SessionStatus status;
   final String? token;
   final String? tipo;
+
+  /// Id da nutriz logada — só existe quando [status] é [SessionStatus.authenticated].
+  final int? nutrizId;
 
   static const loading = SessionState._(status: SessionStatus.loading);
   static const unauthenticated = SessionState._(
@@ -20,11 +28,13 @@ class SessionState {
   factory SessionState.authenticated({
     required String token,
     required String tipo,
+    required int nutrizId,
   }) {
     return SessionState._(
       status: SessionStatus.authenticated,
       token: token,
       tipo: tipo,
+      nutrizId: nutrizId,
     );
   }
 
