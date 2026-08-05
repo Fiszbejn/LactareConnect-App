@@ -8,6 +8,9 @@ import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/conta/presentation/conta_screen.dart';
 import '../../features/conta/presentation/configuracoes_screen.dart';
 import '../../features/faq/presentation/faq_screen.dart';
+import '../../features/recompensas/presentation/meus_resgates_screen.dart';
+import '../../features/recompensas/presentation/recompensa_detail_screen.dart';
+import '../../features/recompensas/presentation/recompensas_screen.dart';
 import '../session/session_controller.dart';
 import 'app_routes.dart';
 import 'home_shell.dart';
@@ -107,8 +110,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.recompensas,
-                builder: (context, state) =>
-                    const TabPlaceholderPage(title: 'Recompensas'),
+                builder: (context, state) => const RecompensasScreen(),
+                routes: [
+                  GoRoute(
+                    path: MeusResgatesScreen.routePath,
+                    builder: (context, state) => const MeusResgatesScreen(),
+                  ),
+                  GoRoute(
+                    path: RecompensaDetailScreen.routePath,
+                    builder: (context, state) => RecompensaDetailScreen(
+                      recompensaId: int.parse(state.pathParameters['id']!),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
