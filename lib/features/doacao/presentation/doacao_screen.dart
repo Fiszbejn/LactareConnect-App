@@ -37,6 +37,19 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
     final locationAsync = ref.watch(userLocationProvider);
     final posicao = locationAsync.valueOrNull;
 
+    // O mapa só recentraliza via `_mapController.move` — `initialCenter` do
+    // FlutterMap é lido uma única vez, então se a geolocalização resolver
+    // depois do primeiro frame (o normal, já que é assíncrona) o mapa fica
+    // parado no centro de fallback pra sempre. Escutamos aqui pra mover o
+    // mapa assim que uma posição nova aparecer, seja na resolução inicial
+    // ou depois de um retoque no botão de recentralizar.
+    ref.listen<AsyncValue<Position?>>(userLocationProvider, (anterior, atual) {
+      final novaPosicao = atual.valueOrNull;
+      if (novaPosicao != null && anterior?.valueOrNull == null) {
+        _mapController.move(ll.LatLng(novaPosicao.latitude, novaPosicao.longitude), 14);
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
