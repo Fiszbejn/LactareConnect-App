@@ -16,6 +16,9 @@ class AppRoutes {
   static const meusResgates = '/recompensas/meus-resgates';
   static String recompensaDetalhe(int id) => '/recompensas/$id';
 
+  static const doarMeusAgendamentos = '/doar/meus-agendamentos';
+  static String doarAgendamento(int bancoId) => '/doar/agendamento/$bancoId';
+
   /// Índice da branch do Chat na `StatefulShellRoute` (`app_router.dart`) —
   /// usado por telas que precisam trocar de aba programaticamente, como o
   /// CTA "Abrir chat" da FAQ.

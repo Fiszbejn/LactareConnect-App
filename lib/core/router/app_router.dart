@@ -7,6 +7,9 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
 import '../../features/conta/presentation/conta_screen.dart';
 import '../../features/conta/presentation/configuracoes_screen.dart';
+import '../../features/doacao/presentation/agendamento_screen.dart';
+import '../../features/doacao/presentation/doacao_screen.dart';
+import '../../features/doacao/presentation/meus_agendamentos_screen.dart';
 import '../../features/faq/presentation/faq_screen.dart';
 import '../../features/recompensas/presentation/meus_resgates_screen.dart';
 import '../../features/recompensas/presentation/recompensa_detail_screen.dart';
@@ -92,8 +95,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.doar,
-                builder: (context, state) =>
-                    const TabPlaceholderPage(title: 'Doar'),
+                builder: (context, state) => const DoacaoScreen(),
+                routes: [
+                  GoRoute(
+                    path: MeusAgendamentosScreen.routePath,
+                    builder: (context, state) => const MeusAgendamentosScreen(),
+                  ),
+                  GoRoute(
+                    path: AgendamentoScreen.routePath,
+                    builder: (context, state) => AgendamentoScreen(
+                      bancoId: int.parse(state.pathParameters['bancoId']!),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
