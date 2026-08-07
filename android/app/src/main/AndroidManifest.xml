@@ -1,4 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Mapa da tela Doar: pino "você está aqui" + ordenar bancos por
+         distância (feature `doacao`). Coarse é suficiente pra essa UX,
+         mas fine é pedida junto pra evitar resultado impreciso demais. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Upload de comprovante de exame pré-doação (câmera/galeria). -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <application
         android:label="lactareconnect_app"
         android:name="${applicationName}"

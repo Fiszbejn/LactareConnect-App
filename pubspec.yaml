@@ -55,6 +55,21 @@ dependencies:
   # Fonte Public Sans (stand-in da fonte de marca ainda não licenciada)
   google_fonts: ^6.2.1
 
+  # Mapa real da tela Doar — tiles do OpenStreetMap, sem precisar de API
+  # key/conta no Google Cloud (decisão confirmada com o usuário).
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+
+  # Localização do dispositivo (pino "você está aqui" + ordenar bancos por
+  # distância) e seletor de arquivo/foto real pro upload de exames.
+  geolocator: ^13.0.2
+  image_picker: ^1.1.2
+  file_picker: ^8.1.4
+
+  # Formatar data/hora do agendamento em pt-BR (dia da semana, "Ter, 13").
+  # Versão presa em 0.20.2 pelo flutter_localizations do próprio SDK.
+  intl: ^0.20.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
