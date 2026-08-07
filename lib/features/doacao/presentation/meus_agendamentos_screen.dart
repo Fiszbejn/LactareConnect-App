@@ -70,7 +70,6 @@ class MeusAgendamentosScreen extends ConsumerWidget {
     final agendamentosAsync = ref.watch(meusAgendamentosProvider);
     final bancosAsync = ref.watch(bancosProvider);
     final registrando = ref.watch(registrarDoacaoControllerProvider).isLoading;
-    final registradasLocalmente = ref.watch(doacoesRegistradasLocalmenteProvider);
 
     ref.listen(registrarDoacaoControllerProvider, (previous, next) {
       final error = next.error;
@@ -133,8 +132,7 @@ class MeusAgendamentosScreen extends ConsumerWidget {
                 agendamento: agendamento,
                 banco: bancos[agendamento.bancoId],
                 registrando: registrando,
-                doacaoRegistrada:
-                    agendamento.doacaoId != null || registradasLocalmente.contains(agendamento.id),
+                doacaoRegistrada: agendamento.doacaoId != null,
                 onRegistrarDoacao: () => _registrarDoacao(context, ref, agendamento),
               );
             },

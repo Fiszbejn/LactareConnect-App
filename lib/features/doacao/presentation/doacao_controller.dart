@@ -20,15 +20,6 @@ final meusAgendamentosProvider = FutureProvider<List<Agendamento>>((ref) {
   return ref.watch(doacaoRepositoryProvider).getMeusAgendamentos();
 });
 
-/// Contorno de um bug real do backend: `GET /agendamentos` (listagem) não
-/// carrega a relação `doacao` (só o `GET /agendamentos/:id` individual
-/// carrega — visto no código-fonte do backend), então `doacaoId` sempre
-/// volta `null` na lista mesmo depois da doação criada com sucesso. Sem
-/// isso, o botão "Confirmar coleta e registrar doação" continuaria
-/// aparecendo pra sempre depois de já ter registrado. Guarda localmente
-/// os ids confirmados nesta sessão até o backend ser corrigido.
-final doacoesRegistradasLocalmenteProvider = StateProvider<Set<int>>((ref) => {});
-
 /// Envio do comprovante de um exame — não existe upload real no backend
 /// (ver decisão registrada: `ExamePreDoacao.arquivoUrl` é só texto, sem
 /// storage por trás). O arquivo escolhido no aparelho vira um
@@ -116,9 +107,6 @@ class RegistrarDoacaoController extends AsyncNotifier<void> {
       );
     });
     if (state.hasError) return false;
-    ref.read(doacoesRegistradasLocalmenteProvider.notifier).update(
-      (ids) => {...ids, agendamentoId},
-    );
     ref.invalidate(meusAgendamentosProvider);
     return true;
   }
