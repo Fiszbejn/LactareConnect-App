@@ -143,10 +143,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Ainda não é uma pessoa doadora? ',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: AppColors.muted,
+                    // Flexible pra quebrar linha em vez de estourar a Row
+                    // quando o texto não cabe (telas estreitas, fonte maior).
+                    Flexible(
+                      child: Text(
+                        'Ainda não é uma pessoa doadora? ',
+                        textAlign: TextAlign.end,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: AppColors.muted,
+                        ),
                       ),
                     ),
                     TextButton(

@@ -19,7 +19,11 @@ class WelcomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-          child: Column(
+          // Em telas baixas o conteúdo (hero + textos + botões) não cabe de
+          // uma vez — sem scroll, isso estourava o layout (RenderFlex
+          // overflow) em vez de simplesmente rolar.
+          child: SingleChildScrollView(
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
@@ -55,7 +59,7 @@ class WelcomeScreen extends StatelessWidget {
                 'futuro mais saudável. Você não está sozinha nessa jornada.',
                 style: textTheme.bodyLarge?.copyWith(color: AppColors.muted),
               ),
-              const Spacer(),
+              const SizedBox(height: 32),
               FilledButton(
                 onPressed: () => context.go(AppRoutes.cadastro),
                 child: const Text('Quero ser uma pessoa doadora'),
@@ -73,6 +77,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
+            ),
           ),
         ),
       ),
