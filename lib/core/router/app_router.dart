@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/cadastro_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/welcome_screen.dart';
+import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/conta/presentation/conta_screen.dart';
 import '../../features/conta/presentation/configuracoes_screen.dart';
 import '../../features/doacao/presentation/agendamento_screen.dart';
@@ -115,8 +116,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.chat,
-                builder: (context, state) =>
-                    const TabPlaceholderPage(title: 'Chat'),
+                builder: (context, state) => const ChatScreen(),
               ),
             ],
           ),
