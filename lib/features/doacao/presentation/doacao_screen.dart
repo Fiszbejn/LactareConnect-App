@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart' as ll;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -15,6 +16,8 @@ import 'location_provider.dart';
 /// coordenadas cadastradas — região dos bancos de exemplo do wireframe
 /// original (São Paulo).
 const _centroFallback = ll.LatLng(-23.5505, -46.6333);
+
+const _urlRblh = 'https://rblh.fiocruz.br/localizacao-dos-blhs';
 
 /// Tela "Doar" — mapa real (flutter_map + OpenStreetMap, sem API key) com
 /// os bancos Lactare, ordenados por distância quando a nutriz permite
@@ -386,37 +389,57 @@ class _BancoCard extends StatelessWidget {
 class _LinkRblh extends StatelessWidget {
   const _LinkRblh();
 
+  Future<void> _abrirRblh(BuildContext context) async {
+    final aberto = await launchUrl(Uri.parse(_urlRblh), mode: LaunchMode.externalApplication);
+    if (!aberto && context.mounted) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(const SnackBar(content: Text('Não foi possível abrir o link.')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.statusPendingBg,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.statusPendingText.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.public, size: 18, color: AppColors.statusPendingText),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Não estamos na sua cidade?',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Veja todos os bancos de leite do Brasil no cadastro nacional da rBLH.',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.muted),
-                ),
-              ],
-            ),
+        onTap: () => _abrirRblh(context),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.statusPendingBg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.statusPendingText.withValues(alpha: 0.3)),
           ),
-        ],
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.public, size: 18, color: AppColors.statusPendingText),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Não estamos na sua cidade?',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Veja todos os bancos de leite do Brasil no cadastro nacional da rBLH.',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.statusPendingText,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.open_in_new, size: 16, color: AppColors.statusPendingText),
+            ],
+          ),
+        ),
       ),
     );
   }
