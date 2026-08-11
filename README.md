@@ -1,22 +1,14 @@
 # 🌱 LactareConnect
 
-App mobile que conecta **pessoas doadoras de leite humano** a bancos de leite, tornando o processo de doação mais simples, transparente e acolhedor — do primeiro cadastro ao agendamento da coleta.
+App mobile que conecta **pessoas doadoras de leite humano** a bancos de leite, do cadastro ao agendamento da coleta, com uma assistente virtual com IA generativa integrada.
 
-Projeto acadêmico (FIAP) desenvolvido em Flutter, com backend próprio em NestJS e assistente virtual (Lila) com IA generativa integrada.
+Desenvolvido como desafio em parceria com **Eurofarma/Lactare**.
 
 ---
 
 ## 📱 Sobre o projeto
 
-Doar leite humano depende de burocracia que muitas vezes afasta quem quer ajudar: dúvidas sobre exames exigidos, dificuldade de achar um banco de leite próximo, falta de acompanhamento do processo. O LactareConnect existe para reduzir essa fricção, oferecendo em um único app:
-
-- Localização de bancos de leite próximos, com mapa real;
-- Checklist guiado dos exames pré-doação exigidos;
-- Agendamento da coleta e acompanhamento do status;
-- Um sistema de recompensas ("Gotinhas") que reconhece cada doação;
-- Uma assistente virtual (Lila) para tirar dúvidas a qualquer momento.
-
-O tom de voz e o vocabulário do app (ex: "leite humano" em vez de "leite materno", "pessoa doadora" em vez de reduzir a identidade a "mãe") seguem um manual de marca próprio, com o cuidado de nunca pressionar ou culpar quem está decidindo, pausando ou parando de doar.
+O app resolve a fricção do processo de doação de leite humano em um fluxo único: localizar um banco de leite próximo, cumprir os exames pré-doação exigidos, agendar a coleta e acompanhar o próprio histórico — com uma assistente virtual disponível para tirar dúvidas a qualquer momento.
 
 ## ✨ Funcionalidades
 
@@ -40,13 +32,13 @@ Todo o fluxo — cadastro, login, agendamento, upload de exame, resgate de recom
 - **flutter_secure_storage** para persistência segura do JWT
 - **flutter_map + geolocator** para mapa real e geolocalização na tela de doação
 - **image_picker + file_picker** para upload de exames
-- Organização **feature-first** inspirada em Clean Architecture, com camadas `domain` / `data` / `presentation` por feature — pragmática o suficiente para não gerar abstração desnecessária em telas simples
+- Organização **feature-first** inspirada em Clean Architecture, com camadas `domain` / `data` / `presentation` por feature
 
 **Backend** ([`LactareConnect-backend`](https://github.com/Fiszbejn/LactareConnect-backend))
 - **NestJS** (TypeScript) com **TypeORM** sobre **Oracle Database**
 - Autenticação **JWT** + autorização **RBAC** (papéis `nutriz`/`administrador`, incluindo regra "dono do próprio registro")
 - API REST documentada via **Swagger**, containerizada com **Docker Compose**
-- Assistente virtual **Lila** integrada ao **Google Gemini** (`@google/genai`), com prompt de sistema construído dinamicamente a partir da FAQ cadastrada e do tom de marca do produto
+- Assistente virtual **Lila** integrada ao **Google Gemini** (`@google/genai`), com prompt de sistema construído dinamicamente a partir da FAQ cadastrada
 
 ```
 lib/
@@ -97,15 +89,18 @@ flutter run -d emulator-5554
 ## 🧠 Destaques técnicos
 
 - **Integração com IA generativa**: a Lila usa o histórico real da conversa + a base de FAQ do produto como contexto para o Gemini, com fallback gracioso caso a API externa falhe (o endpoint nunca quebra).
-- **RBAC granular por método HTTP**: o backend libera `POST` para a nutriz apenas nos próprios registros e mantém `GET` (histórico de conversas) restrito a administradores — uma decisão de produto (privacidade da conversa) garantida estruturalmente na API, não só na camada visual do app.
-- **Escopo sempre validado contra o contrato real da API**: funcionalidades do wireframe original sem respaldo real no backend (ex: regras de pontuação fictícias, campos inexistentes) foram conscientemente cortadas ou ajustadas, em vez de mockadas — o que se vê no app é o que o backend de fato suporta.
+- **RBAC granular por método HTTP**: o backend libera `POST` para a nutriz apenas nos próprios registros e mantém `GET` (histórico de conversas) restrito a administradores — regra de privacidade garantida estruturalmente na API, não só na camada visual do app.
+- **Escopo sempre validado contra o contrato real da API**: funcionalidades sem respaldo real no backend (ex: regras de pontuação fictícias, campos inexistentes) foram conscientemente cortadas ou ajustadas, em vez de mockadas.
 - **Tratamento de casos de borda reais**: geolocalização sem sinal de GPS, contas sem endereço cadastrado, timestamps em UTC vindos do backend, navegação aninhada com `go_router` — todos identificados testando o app de ponta a ponta, não só por análise estática.
 
-## 🗺️ Roadmap
+## 🛠️ Skills demonstradas
 
-- [x] App da pessoa doadora completo (5 abas + assistente com IA real)
-- [ ] Webapp administrativo (consumindo o mesmo backend NestJS)
-- [ ] Integração da Lila com WhatsApp + lembretes periódicos de doação
+- Arquitetura de app mobile em camadas (feature-first / Clean Architecture) com Flutter e Riverpod
+- Design e consumo de API REST com autenticação JWT e autorização baseada em papéis (RBAC)
+- Integração com serviços externos: geolocalização, seleção de arquivos, mapas (OpenStreetMap) e IA generativa (Google Gemini)
+- Modelagem de backend com NestJS, TypeORM e banco relacional Oracle
+- Containerização com Docker e Docker Compose
+- Depuração e correção de bugs reais de integração cliente-servidor (não só erros de compilação)
 
 ## 👤 Autor
 
