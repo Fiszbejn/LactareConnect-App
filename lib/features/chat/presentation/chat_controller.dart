@@ -45,9 +45,6 @@ class ChatController extends Notifier<ChatState> {
     final texto = textoDigitado.trim();
     if (texto.isEmpty || state.enviando) return;
 
-    // Mostra a mensagem da nutriz na hora, sem esperar a resposta da Lila
-    // — com id temporário, trocado pelo id real (ou removido, se falhar)
-    // quando o backend responder.
     final mensagemOtimista = MensagemChat(
       id: _proximoIdTemporario--,
       remetente: RemetenteMensagem.usuario,
