@@ -1,5 +1,6 @@
-# Notas locais, fora do controle de versão
-/docs/
+# Notas locais, fora do controle de versão (assets do README são exceção)
+/docs/*
+!/docs/assets/
 
 # Miscellaneous
 *.class
