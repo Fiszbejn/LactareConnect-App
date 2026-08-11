@@ -102,6 +102,13 @@ flutter run -d emulator-5554
 - Containerização com Docker e Docker Compose
 - Depuração e correção de bugs reais de integração cliente-servidor (não só erros de compilação)
 
-## 👤 Autor
+---
 
-Desenvolvido por [Fiszbejn](https://github.com/Fiszbejn).
+<br/>
+<br/>
+
+<p align="center">
+  <img src="docs/assets/eurofarma-logo.png" alt="Eurofarma" height="40" />
+  &emsp;&emsp;×&emsp;&emsp;
+  <img src="docs/assets/fiap-logo.png" alt="FIAP" height="40" />
+</p>
