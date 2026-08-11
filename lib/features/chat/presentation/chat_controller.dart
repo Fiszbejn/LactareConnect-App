@@ -21,6 +21,7 @@ class ChatState {
 class ChatController extends Notifier<ChatState> {
   int? _conversaId;
   int? _nutrizIdVista;
+  int _proximoIdTemporario = -1;
 
   @override
   ChatState build() {
@@ -44,17 +45,34 @@ class ChatController extends Notifier<ChatState> {
     final texto = textoDigitado.trim();
     if (texto.isEmpty || state.enviando) return;
 
-    state = ChatState(mensagens: state.mensagens, enviando: true);
+    final mensagemOtimista = MensagemChat(
+      id: _proximoIdTemporario--,
+      remetente: RemetenteMensagem.usuario,
+      texto: texto,
+      timestamp: DateTime.now(),
+    );
+    state = ChatState(mensagens: [...state.mensagens, mensagemOtimista], enviando: true);
     try {
       final nutrizId = ref.read(sessionControllerProvider).nutrizId!;
       final repository = ref.read(chatRepositoryProvider);
       _conversaId ??= await repository.iniciarConversa(nutrizId);
       final resultado = await repository.enviarMensagem(conversaId: _conversaId!, texto: texto);
       state = ChatState(
-        mensagens: [...state.mensagens, resultado.mensagemUsuario, resultado.respostaBot],
+        mensagens: [
+          for (final mensagem in state.mensagens)
+            if (mensagem.id != mensagemOtimista.id) mensagem,
+          resultado.mensagemUsuario,
+          resultado.respostaBot,
+        ],
       );
     } on ChatFailure catch (e) {
-      state = ChatState(mensagens: state.mensagens, erro: e.message);
+      state = ChatState(
+        mensagens: [
+          for (final mensagem in state.mensagens)
+            if (mensagem.id != mensagemOtimista.id) mensagem,
+        ],
+        erro: e.message,
+      );
     }
   }
 }
