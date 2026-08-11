@@ -70,6 +70,9 @@ dependencies:
   # Versão presa em 0.20.2 pelo flutter_localizations do próprio SDK.
   intl: ^0.20.2
 
+  # Abrir links externos (ex: cadastro nacional da rBLH) no navegador.
+  url_launcher: ^6.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
