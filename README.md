@@ -32,7 +32,7 @@ Todo o fluxo — cadastro, login, agendamento, upload de exame, resgate de recom
 - **flutter_secure_storage** para persistência segura do JWT
 - **flutter_map + geolocator** para mapa real e geolocalização na tela de doação
 - **image_picker + file_picker** para upload de exames
-- Organização **feature-first** inspirada em Clean Architecture, com camadas `domain` / `data` / `presentation` por feature
+- Organização **feature-first** inspirada em Clean Architecture, com camadas `domain` / `data` / `presentation` por feature — escolhida por termos várias funcionalidades bem distintas (auth, FAQ, doação, chat, recompensas, conta), cada uma agrupando seu próprio código de tela, regra de negócio e acesso a dados, em vez de espalhar por pastas genéricas (`widgets/`, `services/`, `providers/`) misturando funcionalidades diferentes
 
 **Backend** ([`LactareConnect-backend`](https://github.com/Fiszbejn/LactareConnect-backend))
 - **NestJS** (TypeScript) com **TypeORM** sobre **Oracle Database**
