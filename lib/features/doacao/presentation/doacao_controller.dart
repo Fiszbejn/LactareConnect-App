@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/session/session_controller.dart';
 import '../data/doacao_repository_impl.dart';
 import '../domain/agendamento.dart';
-import '../domain/banco_leite.dart';
+import '../domain/regiao_atendimento.dart';
 import '../domain/exame_pre_doacao.dart';
 
-final bancosProvider = FutureProvider<List<BancoLeite>>((ref) {
-  return ref.watch(doacaoRepositoryProvider).getBancos();
+final regioesAtendimentoProvider = FutureProvider<List<RegiaoAtendimento>>((ref) {
+  return ref.watch(doacaoRepositoryProvider).getRegioesAtendimento();
 });
 
 final meusExamesProvider = FutureProvider<List<ExamePreDoacao>>((ref) {
@@ -57,7 +57,7 @@ class AgendamentoController extends AsyncNotifier<void> {
   FutureOr<void> build() {}
 
   Future<bool> agendar({
-    required int bancoId,
+    required int regiaoAtendimentoId,
     required DateTime dataColeta,
     required String horario,
   }) async {
@@ -66,7 +66,7 @@ class AgendamentoController extends AsyncNotifier<void> {
     state = await AsyncValue.guard(
       () => ref.read(doacaoRepositoryProvider).criarAgendamento(
         nutrizId: nutrizId,
-        bancoId: bancoId,
+        regiaoAtendimentoId: regiaoAtendimentoId,
         dataColeta: dataColeta,
         horario: horario,
       ),

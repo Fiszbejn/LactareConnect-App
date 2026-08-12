@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../domain/agendamento.dart';
-import '../domain/banco_leite.dart';
+import '../domain/regiao_atendimento.dart';
 import '../domain/doacao_failure.dart';
 import 'doacao_controller.dart';
 
@@ -68,7 +68,7 @@ class MeusAgendamentosScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final agendamentosAsync = ref.watch(meusAgendamentosProvider);
-    final bancosAsync = ref.watch(bancosProvider);
+    final regioesAsync = ref.watch(regioesAtendimentoProvider);
     final registrando = ref.watch(registrarDoacaoControllerProvider).isLoading;
 
     ref.listen(registrarDoacaoControllerProvider, (previous, next) {
@@ -118,8 +118,8 @@ class MeusAgendamentosScreen extends ConsumerWidget {
             );
           }
 
-          final bancos = <int, BancoLeite>{
-            for (final b in bancosAsync.value ?? const <BancoLeite>[]) b.id: b,
+          final regioes = <int, RegiaoAtendimento>{
+            for (final r in regioesAsync.value ?? const <RegiaoAtendimento>[]) r.id: r,
           };
 
           return ListView.separated(
@@ -130,7 +130,7 @@ class MeusAgendamentosScreen extends ConsumerWidget {
               final agendamento = agendamentos[index];
               return _AgendamentoCard(
                 agendamento: agendamento,
-                banco: bancos[agendamento.bancoId],
+                regiao: regioes[agendamento.regiaoAtendimentoId],
                 registrando: registrando,
                 doacaoRegistrada: agendamento.doacaoId != null,
                 onRegistrarDoacao: () => _registrarDoacao(context, ref, agendamento),
@@ -146,14 +146,14 @@ class MeusAgendamentosScreen extends ConsumerWidget {
 class _AgendamentoCard extends StatelessWidget {
   const _AgendamentoCard({
     required this.agendamento,
-    required this.banco,
+    required this.regiao,
     required this.registrando,
     required this.doacaoRegistrada,
     required this.onRegistrarDoacao,
   });
 
   final Agendamento agendamento;
-  final BancoLeite? banco;
+  final RegiaoAtendimento? regiao;
   final bool registrando;
   final bool doacaoRegistrada;
   final VoidCallback onRegistrarDoacao;
@@ -189,7 +189,7 @@ class _AgendamentoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      banco?.nome ?? 'Banco #${agendamento.bancoId ?? '?'}',
+                      regiao?.nome ?? 'Região #${agendamento.regiaoAtendimentoId ?? '?'}',
                       style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 2),

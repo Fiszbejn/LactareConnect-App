@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/network_providers.dart';
 import '../domain/agendamento.dart';
-import '../domain/banco_leite.dart';
+import '../domain/regiao_atendimento.dart';
 import '../domain/doacao_failure.dart';
 import '../domain/doacao_repository.dart';
 import '../domain/exame_pre_doacao.dart';
@@ -14,12 +14,12 @@ class DoacaoRepositoryImpl implements DoacaoRepository {
   final Dio _dio;
 
   @override
-  Future<List<BancoLeite>> getBancos() async {
-    final response = await _dio.get<List<dynamic>>('/bancos-leite');
+  Future<List<RegiaoAtendimento>> getRegioesAtendimento() async {
+    final response = await _dio.get<List<dynamic>>('/regioes-atendimento');
     return response.data!
         .cast<Map<String, dynamic>>()
         .map(
-          (json) => BancoLeite(
+          (json) => RegiaoAtendimento(
             id: json['id'] as int,
             nome: json['nome'] as String,
             enderecoTexto: json['enderecoTexto'] as String,
@@ -87,7 +87,7 @@ class DoacaoRepositoryImpl implements DoacaoRepository {
   @override
   Future<void> criarAgendamento({
     required int nutrizId,
-    required int bancoId,
+    required int regiaoAtendimentoId,
     required DateTime dataColeta,
     required String horario,
   }) async {
@@ -98,7 +98,7 @@ class DoacaoRepositoryImpl implements DoacaoRepository {
           'dataColeta': _formatarData(dataColeta),
           'horario': horario,
           'nutrizId': nutrizId,
-          'bancoId': bancoId,
+          'regiaoAtendimentoId': regiaoAtendimentoId,
         },
       );
     } on DioException catch (e) {
@@ -119,7 +119,7 @@ class DoacaoRepositoryImpl implements DoacaoRepository {
             dataColeta: DateTime.parse(json['dataColeta'] as String),
             horario: json['horario'] as String,
             status: agendamentoStatusFromBackend(json['status'] as String),
-            bancoId: json['bancoId'] as int?,
+            regiaoAtendimentoId: json['regiaoAtendimentoId'] as int?,
             doacaoId: json['doacaoId'] as int?,
           ),
         )

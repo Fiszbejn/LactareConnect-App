@@ -105,7 +105,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: AgendamentoScreen.routePath,
                     builder: (context, state) => AgendamentoScreen(
-                      bancoId: int.parse(state.pathParameters['bancoId']!),
+                      regiaoAtendimentoId: int.parse(
+                        state.pathParameters['regiaoAtendimentoId']!,
+                      ),
                     ),
                   ),
                 ],

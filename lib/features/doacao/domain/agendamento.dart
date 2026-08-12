@@ -12,7 +12,7 @@ class Agendamento {
     required this.dataColeta,
     required this.horario,
     required this.status,
-    required this.bancoId,
+    required this.regiaoAtendimentoId,
     required this.doacaoId,
   });
 
@@ -20,7 +20,7 @@ class Agendamento {
   final DateTime dataColeta;
   final String horario;
   final AgendamentoStatus status;
-  final int? bancoId;
+  final int? regiaoAtendimentoId;
 
   /// Preenchido só depois que a doação é registrada a partir deste
   /// agendamento — usado pra saber se o botão "Registrar doação" ainda
