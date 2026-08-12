@@ -12,17 +12,17 @@ import 'doacao_controller.dart';
 
 enum _OrigemArquivo { arquivo, camera }
 
-/// Agendar coleta em [bancoId] — checklist dos 4 exames obrigatórios (ver
-/// domain/exame_pre_doacao.dart) + seleção de dia/horário livre (o
-/// backend não tem endpoint de disponibilidade real, então não há grade
-/// de horários "ocupados/livres" fingida aqui, só uma lista de horários
-/// comuns pra facilitar a escolha).
+/// Agendar coleta na região [regiaoAtendimentoId] — checklist dos 4 exames
+/// obrigatórios (ver domain/exame_pre_doacao.dart) + seleção de dia/horário
+/// livre (o backend não tem endpoint de disponibilidade real, então não há
+/// grade de horários "ocupados/livres" fingida aqui, só uma lista de
+/// horários comuns pra facilitar a escolha).
 class AgendamentoScreen extends ConsumerStatefulWidget {
-  const AgendamentoScreen({required this.bancoId, super.key});
+  const AgendamentoScreen({required this.regiaoAtendimentoId, super.key});
 
-  static const routePath = 'agendamento/:bancoId';
+  static const routePath = 'agendamento/:regiaoAtendimentoId';
 
-  final int bancoId;
+  final int regiaoAtendimentoId;
 
   @override
   ConsumerState<AgendamentoScreen> createState() => _AgendamentoScreenState();
@@ -95,7 +95,7 @@ class _AgendamentoScreenState extends ConsumerState<AgendamentoScreen> {
 
   Future<void> _confirmarAgendamento() async {
     final sucesso = await ref.read(agendamentoControllerProvider.notifier).agendar(
-      bancoId: widget.bancoId,
+      regiaoAtendimentoId: widget.regiaoAtendimentoId,
       dataColeta: _dataSelecionada!,
       horario: _horarioSelecionado!,
     );

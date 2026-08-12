@@ -1,11 +1,11 @@
 import 'agendamento.dart';
-import 'banco_leite.dart';
+import 'regiao_atendimento.dart';
 import 'exame_pre_doacao.dart';
 
 /// Contrato de acesso aos dados de Doar — a implementação real (Dio) fica
 /// em `data/`.
 abstract class DoacaoRepository {
-  Future<List<BancoLeite>> getBancos();
+  Future<List<RegiaoAtendimento>> getRegioesAtendimento();
 
   Future<List<ExamePreDoacao>> getMeusExames();
 
@@ -20,12 +20,12 @@ abstract class DoacaoRepository {
     int? exameIdExistente,
   });
 
-  /// Agenda a coleta em [bancoId]. Lança [DoacaoFailure] com a mensagem
-  /// pronta do backend se algum dos 4 exames obrigatórios ainda não
-  /// estiver "ok" (`POST /agendamentos` responde 400 nesse caso).
+  /// Agenda a coleta na região [regiaoAtendimentoId]. Lança [DoacaoFailure]
+  /// com a mensagem pronta do backend se algum dos 4 exames obrigatórios
+  /// ainda não estiver "ok" (`POST /agendamentos` responde 400 nesse caso).
   Future<void> criarAgendamento({
     required int nutrizId,
-    required int bancoId,
+    required int regiaoAtendimentoId,
     required DateTime dataColeta,
     required String horario,
   });

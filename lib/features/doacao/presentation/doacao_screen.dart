@@ -8,11 +8,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
-import '../domain/banco_leite.dart';
+import '../domain/regiao_atendimento.dart';
 import 'doacao_controller.dart';
 import 'location_provider.dart';
 
-/// Centro do mapa quando ainda não há geolocalização nem banco com
+/// Centro do mapa quando ainda não há geolocalização nem região com
 /// coordenadas cadastradas — região dos bancos de exemplo do wireframe
 /// original (São Paulo).
 const _centroFallback = ll.LatLng(-23.5505, -46.6333);
@@ -20,9 +20,10 @@ const _centroFallback = ll.LatLng(-23.5505, -46.6333);
 const _urlRblh = 'https://rblh.fiocruz.br/localizacao-dos-blhs';
 
 /// Tela "Doar" — mapa real (flutter_map + OpenStreetMap, sem API key) com
-/// os bancos Lactare, ordenados por distância quando a nutriz permite
-/// geolocalização. Ver domain/banco_leite.dart pra por que bancos sem
-/// lat/long cadastrada aparecem só na lista, não no mapa.
+/// as regiões de atendimento da Lactare, ordenadas por distância quando a
+/// nutriz permite geolocalização. Ver domain/regiao_atendimento.dart pra
+/// por que regiões sem lat/long cadastrada aparecem só na lista, não no
+/// mapa.
 class DoacaoScreen extends ConsumerStatefulWidget {
   const DoacaoScreen({super.key});
 
@@ -32,11 +33,11 @@ class DoacaoScreen extends ConsumerStatefulWidget {
 
 class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
   final _mapController = MapController();
-  int? _bancoSelecionadoId;
+  int? _regiaoSelecionadaId;
 
   @override
   Widget build(BuildContext context) {
-    final bancosAsync = ref.watch(bancosProvider);
+    final regioesAsync = ref.watch(regioesAtendimentoProvider);
     final locationAsync = ref.watch(userLocationProvider);
     final posicao = locationAsync.valueOrNull;
 
@@ -65,17 +66,18 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
           ),
         ],
       ),
-      body: bancosAsync.when(
+      body: regioesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => _ErroCarregar(onRetry: () => ref.invalidate(bancosProvider)),
-        data: (bancos) {
-          final bancosOrdenados = _ordenarPorDistancia(bancos, posicao);
+        error: (error, stackTrace) =>
+            _ErroCarregar(onRetry: () => ref.invalidate(regioesAtendimentoProvider)),
+        data: (regioes) {
+          final regioesOrdenadas = _ordenarPorDistancia(regioes, posicao);
           // Espera a geolocalização resolver (concedida, negada ou com
           // erro) antes de travar a seleção inicial — senão o primeiro
-          // build (sem posição ainda) seleciona o banco na ordem "crua"
+          // build (sem posição ainda) seleciona a região na ordem "crua"
           // do backend, sem levar a distância em conta.
-          if (_bancoSelecionadoId == null && !locationAsync.isLoading && bancosOrdenados.isNotEmpty) {
-            _bancoSelecionadoId = bancosOrdenados.first.id;
+          if (_regiaoSelecionadaId == null && !locationAsync.isLoading && regioesOrdenadas.isNotEmpty) {
+            _regiaoSelecionadaId = regioesOrdenadas.first.id;
           }
 
           return Column(
@@ -86,9 +88,9 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
                   children: [
                     _Mapa(
                       mapController: _mapController,
-                      bancos: bancos,
+                      regioes: regioes,
                       posicaoUsuario: posicao,
-                      bancoSelecionadoId: _bancoSelecionadoId,
+                      regiaoSelecionadaId: _regiaoSelecionadaId,
                     ),
                     Positioned(
                       right: 12,
@@ -105,8 +107,8 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
                 ),
               ),
               Expanded(
-                child: bancosOrdenados.isEmpty
-                    ? const _SemBancos()
+                child: regioesOrdenadas.isEmpty
+                    ? const _SemRegioes()
                     : ListView(
                         padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
                         children: [
@@ -134,15 +136,15 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.muted),
                           ),
                           const SizedBox(height: 12),
-                          for (final entry in bancosOrdenados.asMap().entries)
+                          for (final entry in regioesOrdenadas.asMap().entries)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8),
-                              child: _BancoCard(
-                                banco: entry.value,
+                              child: _RegiaoCard(
+                                regiao: entry.value,
                                 posicaoUsuario: posicao,
-                                selecionado: entry.value.id == _bancoSelecionadoId,
+                                selecionado: entry.value.id == _regiaoSelecionadaId,
                                 maisProximo: entry.key == 0 && posicao != null && entry.value.temCoordenadas,
-                                onTap: () => setState(() => _bancoSelecionadoId = entry.value.id),
+                                onTap: () => setState(() => _regiaoSelecionadaId = entry.value.id),
                               ),
                             ),
                           const SizedBox(height: 4),
@@ -150,7 +152,7 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
                         ],
                       ),
               ),
-              if (_bancoSelecionadoId != null)
+              if (_regiaoSelecionadaId != null)
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
                   decoration: const BoxDecoration(
@@ -158,7 +160,7 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
                     border: Border(top: BorderSide(color: AppColors.lineSoft)),
                   ),
                   child: FilledButton(
-                    onPressed: () => context.push(AppRoutes.doarAgendamento(_bancoSelecionadoId!)),
+                    onPressed: () => context.push(AppRoutes.doarAgendamento(_regiaoSelecionadaId!)),
                     child: const Text('Agendar doação em casa'),
                   ),
                 ),
@@ -169,45 +171,45 @@ class _DoacaoScreenState extends ConsumerState<DoacaoScreen> {
     );
   }
 
-  List<BancoLeite> _ordenarPorDistancia(List<BancoLeite> bancos, Position? posicao) {
-    if (posicao == null) return bancos;
-    final comCoordenadas = bancos.where((b) => b.temCoordenadas).toList()
+  List<RegiaoAtendimento> _ordenarPorDistancia(List<RegiaoAtendimento> regioes, Position? posicao) {
+    if (posicao == null) return regioes;
+    final comCoordenadas = regioes.where((r) => r.temCoordenadas).toList()
       ..sort(
         (a, b) => _distanciaMetros(posicao, a).compareTo(_distanciaMetros(posicao, b)),
       );
-    final semCoordenadas = bancos.where((b) => !b.temCoordenadas).toList();
+    final semCoordenadas = regioes.where((r) => !r.temCoordenadas).toList();
     return [...comCoordenadas, ...semCoordenadas];
   }
 }
 
-double _distanciaMetros(Position posicao, BancoLeite banco) {
+double _distanciaMetros(Position posicao, RegiaoAtendimento regiao) {
   return Geolocator.distanceBetween(
     posicao.latitude,
     posicao.longitude,
-    banco.latitude!,
-    banco.longitude!,
+    regiao.latitude!,
+    regiao.longitude!,
   );
 }
 
 class _Mapa extends StatelessWidget {
   const _Mapa({
     required this.mapController,
-    required this.bancos,
+    required this.regioes,
     required this.posicaoUsuario,
-    required this.bancoSelecionadoId,
+    required this.regiaoSelecionadaId,
   });
 
   final MapController mapController;
-  final List<BancoLeite> bancos;
+  final List<RegiaoAtendimento> regioes;
   final Position? posicaoUsuario;
-  final int? bancoSelecionadoId;
+  final int? regiaoSelecionadaId;
 
   ll.LatLng _centro() {
     if (posicaoUsuario != null) {
       return ll.LatLng(posicaoUsuario!.latitude, posicaoUsuario!.longitude);
     }
-    for (final banco in bancos) {
-      if (banco.temCoordenadas) return ll.LatLng(banco.latitude!, banco.longitude!);
+    for (final regiao in regioes) {
+      if (regiao.temCoordenadas) return ll.LatLng(regiao.latitude!, regiao.longitude!);
     }
     return _centroFallback;
   }
@@ -240,15 +242,15 @@ class _Mapa extends StatelessWidget {
                   ),
                 ),
               ),
-            for (final banco in bancos.where((b) => b.temCoordenadas))
+            for (final regiao in regioes.where((r) => r.temCoordenadas))
               Marker(
-                point: ll.LatLng(banco.latitude!, banco.longitude!),
+                point: ll.LatLng(regiao.latitude!, regiao.longitude!),
                 width: 36,
                 height: 36,
                 child: Icon(
                   Icons.location_on,
                   size: 34,
-                  color: banco.id == bancoSelecionadoId ? AppColors.brand : AppColors.brandLight,
+                  color: regiao.id == regiaoSelecionadaId ? AppColors.brand : AppColors.brandLight,
                 ),
               ),
           ],
@@ -306,16 +308,16 @@ class _BotaoRecentralizar extends StatelessWidget {
   }
 }
 
-class _BancoCard extends StatelessWidget {
-  const _BancoCard({
-    required this.banco,
+class _RegiaoCard extends StatelessWidget {
+  const _RegiaoCard({
+    required this.regiao,
     required this.posicaoUsuario,
     required this.selecionado,
     required this.maisProximo,
     required this.onTap,
   });
 
-  final BancoLeite banco;
+  final RegiaoAtendimento regiao;
   final Position? posicaoUsuario;
   final bool selecionado;
   final bool maisProximo;
@@ -323,8 +325,8 @@ class _BancoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final distanciaKm = (posicaoUsuario != null && banco.temCoordenadas)
-        ? _distanciaMetros(posicaoUsuario!, banco) / 1000
+    final distanciaKm = (posicaoUsuario != null && regiao.temCoordenadas)
+        ? _distanciaMetros(posicaoUsuario!, regiao) / 1000
         : null;
 
     return InkWell(
@@ -354,7 +356,7 @@ class _BancoCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          banco.nome,
+                          regiao.nome,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                         ),
                       ),
@@ -372,8 +374,8 @@ class _BancoCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     distanciaKm != null
-                        ? '${distanciaKm.toStringAsFixed(1)} km · ${banco.areaAtendimento}'
-                        : banco.areaAtendimento,
+                        ? '${distanciaKm.toStringAsFixed(1)} km · ${regiao.areaAtendimento}'
+                        : regiao.areaAtendimento,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.muted),
                   ),
                 ],
@@ -445,8 +447,8 @@ class _LinkRblh extends StatelessWidget {
   }
 }
 
-class _SemBancos extends StatelessWidget {
-  const _SemBancos();
+class _SemRegioes extends StatelessWidget {
+  const _SemRegioes();
 
   @override
   Widget build(BuildContext context) {
