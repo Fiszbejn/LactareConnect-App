@@ -22,6 +22,40 @@ O app resolve a fricção do processo de doação de leite humano em um fluxo ú
 
 Todo o fluxo — cadastro, login, agendamento, upload de exame, resgate de recompensa, conversa com a Lila — é validado ponta a ponta contra o backend real, não apenas mockado.
 
+## 📲 Telas do sistema
+
+O fluxo abaixo segue a ordem real de navegação: da boas-vindas até o dia a dia da pessoa doadora já logada, passando pelas 5 abas fixas da home (`Início` · `Doar` · `Chat` · `Recompensas` · `Conta`, ver `HomeShell` em `lib/core/router/home_shell.dart`). Prints tirados no emulador Android, com o app consumindo o backend real em produção.
+
+### Autenticação (fora da home, sem sessão)
+
+| Boas-vindas | Login | Cadastro — 1/3 Identidade |
+|---|---|---|
+| <img src="docs/assets/screenshots/01-boas-vindas.png" width="220"/> | <img src="docs/assets/screenshots/02-login.png" width="220"/> | <img src="docs/assets/screenshots/03-cadastro-identidade.png" width="220"/> |
+
+| Cadastro — 2/3 Contato e endereço | Cadastro — 3/3 Senha |
+|---|---|
+| <img src="docs/assets/screenshots/04-cadastro-contato.png" width="220"/> | <img src="docs/assets/screenshots/05-cadastro-senha.png" width="220"/> |
+
+A tela de **boas-vindas** (`welcome_screen.dart`) é a raiz de quem ainda não tem sessão: leva pro **login** (`login_screen.dart`) ou pro **cadastro** (`cadastro_screen.dart`), um wizard de 3 passos — identidade, contato/endereço e senha — com validação em cada campo antes de avançar. Ao concluir qualquer um dos dois fluxos com sucesso, o `go_router` redireciona automaticamente pra home (ver guard de sessão em `lib/core/router/app_router.dart`); tentar voltar pra essas telas já autenticada faz o mesmo redirect no sentido contrário.
+
+### Home — 5 abas fixas (com sessão)
+
+| Início · FAQ | Doar · mapa e bancos | Doar · agendar coleta |
+|---|---|---|
+| <img src="docs/assets/screenshots/06-inicio-faq.png" width="220"/> | <img src="docs/assets/screenshots/07-doar-mapa.png" width="220"/> | <img src="docs/assets/screenshots/08-agendar-coleta.png" width="220"/> |
+
+| Chat · Lila | Recompensas | Conta |
+|---|---|---|
+| <img src="docs/assets/screenshots/09-chat-lila.png" width="220"/> | <img src="docs/assets/screenshots/10-recompensas.png" width="220"/> | <img src="docs/assets/screenshots/11-conta.png" width="220"/> |
+
+- **Início** é a primeira aba (FAQ categorizada, com busca e feedback de utilidade por pergunta).
+- **Doar** mostra o mapa real (OpenStreetMap) com os bancos Lactare próximos à doadora; ao escolher um banco, "Agendar doação em casa" abre a tela de agendamento, onde é preciso enviar os 4 exames pré-doação antes de liberar a escolha de data/horário — o botão de confirmar fica desabilitado com uma mensagem explícita até isso acontecer. Essa tela tem uma sub-rota própria, "Meus agendamentos", pro histórico.
+- **Chat** abre a conversa com a Lila, a assistente virtual (Gemini) com contexto da FAQ real do app.
+- **Recompensas** lista o catálogo trocável pelo saldo de Gotinhas, com sub-rotas para o detalhe de cada recompensa e para "Meus resgates".
+- **Conta** reúne dados pessoais, contato/endereço, preferências de notificação e o logout; a sub-rota "Configurações" fica dentro dela.
+
+Cada aba mantém sua própria pilha de navegação (`StatefulNavigationShell` do `go_router`) — sair de um sub-fluxo dentro de "Doar" e voltar depois de visitar "Chat" retoma exatamente de onde a doadora parou.
+
 ## 🏗️ Arquitetura e stack
 
 **App (este repositório)**
@@ -65,19 +99,24 @@ lib/
 
 ### Pré-requisitos
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) (^3.11.3)
-- [Docker](https://www.docker.com/) (para o backend)
 - Um emulador Android/iOS, Chrome, ou dispositivo físico
 
-### 1. Backend
-```bash
-git clone https://github.com/Fiszbejn/LactareConnect-backend.git
-cd LactareConnect-backend
-cp .env.example .env   # preencher credenciais do Oracle, JWT_SECRET e GEMINI_API_KEY
-docker compose up --build -d
-```
-A API sobe em `http://localhost:3000`, com documentação Swagger em `/docs`.
+### Configuração da API
 
-### 2. App
+O app já aponta por padrão para o backend em produção, hospedado no Render:
+`https://lactareconnect-backend.onrender.com/v1` (`lib/core/network/api_constants.dart`).
+
+A URL é fixa no código de propósito — o backend já está deployado, então quem for
+rodar/avaliar o app não precisa subir o backend localmente via Docker/Oracle para
+testar o fluxo completo. Para apontar para um backend local (ex: durante
+desenvolvimento do próprio backend), basta trocar `ApiConstants.baseUrl` em
+`lib/core/network/api_constants.dart` pela URL local (`http://localhost:3000/v1`,
+ou `http://10.0.2.2:3000/v1` no caso de emulador Android).
+
+O código-fonte do backend está em [`LactareConnect-backend`](https://github.com/Fiszbejn/LactareConnect-backend),
+com instruções de deploy local via `docker compose` no próprio README dele.
+
+### Rodar o app
 ```bash
 flutter pub get
 flutter run                # escolhe o dispositivo disponível
