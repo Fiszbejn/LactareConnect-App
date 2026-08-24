@@ -49,6 +49,12 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Usamos sua localização pra mostrar os bancos Lactare mais próximos de você.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Precisamos da câmera pra você anexar uma foto do resultado do seu exame pré-doação.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Precisamos acessar suas fotos pra você anexar o resultado do seu exame pré-doação.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
