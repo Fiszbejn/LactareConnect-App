@@ -39,7 +39,7 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 32),
-              _HeroPlaceholder(),
+              _Hero(),
               const SizedBox(height: 28),
               Text.rich(
                 TextSpan(
@@ -85,24 +85,18 @@ class WelcomeScreen extends StatelessWidget {
   }
 }
 
-/// Substitui a foto real do wireframe (`assets/welcome_mae_bebe.jpg`), que
-/// ainda não existe no projeto — gradiente de marca como placeholder até
-/// termos o asset definitivo.
-class _HeroPlaceholder extends StatelessWidget {
+class _Hero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.brandLight, AppColors.brand],
-        ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Image.asset(
+        'assets/images/welcome_mae_bebe.png',
+        height: 180,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        alignment: const Alignment(0.4, 0.6),
       ),
-      alignment: Alignment.center,
-      child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 48),
     );
   }
 }
