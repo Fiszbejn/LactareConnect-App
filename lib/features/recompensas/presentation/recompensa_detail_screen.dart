@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/recompensa.dart';
 import '../domain/resgate_failure.dart';
+import 'recompensa_imagem.dart';
 import 'recompensas_controller.dart';
 
 /// Confirmação de resgate — variante fiel ao wireframe `ScreenRewardDetail`,
@@ -133,23 +134,32 @@ class _RecompensaDetailScreenState extends ConsumerState<RecompensaDetailScreen>
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                   children: [
-                    Container(
-                      height: 180,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [AppColors.brand, AppColors.brandLight],
-                        ),
+                    if (imagemDaRecompensa(recompensa) case final imagem?)
+                      ClipRRect(
                         borderRadius: BorderRadius.circular(16),
+                        child: AspectRatio(
+                          aspectRatio: recompensaImagemAspectRatio,
+                          child: Image.asset(imagem, fit: BoxFit.cover),
+                        ),
+                      )
+                    else
+                      Container(
+                        height: 180,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [AppColors.brand, AppColors.brandLight],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.card_giftcard,
+                          size: 56,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
                       ),
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.card_giftcard,
-                        size: 56,
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
-                    ),
                     const SizedBox(height: 16),
                     Text(
                       recompensa.parceiro,
