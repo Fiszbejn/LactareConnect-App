@@ -58,7 +58,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
           child: Form(
             key: _formKey,
@@ -140,25 +141,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       : const Text('Entrar'),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    // Flexible pra quebrar linha em vez de estourar a Row
-                    // quando o texto não cabe (telas estreitas, fonte maior).
-                    Flexible(
-                      child: Text(
-                        'Ainda não é uma pessoa doadora? ',
-                        textAlign: TextAlign.end,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: AppColors.muted,
-                        ),
+                    Text(
+                      'Ainda não é uma pessoa doadora?',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.muted,
                       ),
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
                         minimumSize: Size.zero,
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 8,
+                        ),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        textStyle: textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       onPressed: () => context.go(AppRoutes.cadastro),
                       child: const Text('Cadastre-se'),
