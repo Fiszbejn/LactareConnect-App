@@ -356,21 +356,17 @@ class _CadastroScreenState extends ConsumerState<CadastroScreen> {
           ],
         ),
         const SizedBox(height: 14),
+        TextFormField(
+          controller: _bairroController,
+          decoration: const InputDecoration(labelText: 'Bairro'),
+          validator: (v) =>
+              (v == null || v.trim().isEmpty) ? 'Obrigatório.' : null,
+        ),
+        const SizedBox(height: 14),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 2,
-              child: TextFormField(
-                controller: _bairroController,
-                decoration: const InputDecoration(labelText: 'Bairro'),
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? 'Obrigatório.' : null,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 2,
               child: TextFormField(
                 controller: _cidadeController,
                 decoration: const InputDecoration(labelText: 'Cidade'),
@@ -379,7 +375,8 @@ class _CadastroScreenState extends ConsumerState<CadastroScreen> {
               ),
             ),
             const SizedBox(width: 12),
-            Expanded(
+            SizedBox(
+              width: 88,
               child: TextFormField(
                 controller: _ufController,
                 textCapitalization: TextCapitalization.characters,
@@ -389,7 +386,7 @@ class _CadastroScreenState extends ConsumerState<CadastroScreen> {
                   counterText: '',
                 ),
                 validator: (v) =>
-                    (v == null || v.trim().length != 2) ? 'UF' : null,
+                    (v == null || v.trim().length != 2) ? 'Obrigatório.' : null,
               ),
             ),
           ],
