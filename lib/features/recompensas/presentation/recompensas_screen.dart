@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/recompensa.dart';
+import 'recompensa_imagem.dart';
 import 'recompensas_controller.dart';
 
 /// Catálogo de recompensas — aba "Recompensas". Variante fiel ao
@@ -288,17 +289,26 @@ class _CatalogoGrid extends StatelessWidget {
       );
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: recompensas.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 0.78,
-      ),
-      itemBuilder: (context, index) => _RecompensaCard(recompensa: recompensas[index], indice: index),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const spacing = 10.0;
+        final larguraCard = (constraints.maxWidth - spacing) / 2;
+        final alturaImagem = larguraCard / recompensaImagemAspectRatio;
+        final fatorFonte = MediaQuery.textScalerOf(context).scale(1);
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: recompensas.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: spacing,
+            crossAxisSpacing: spacing,
+            mainAxisExtent: alturaImagem + 96 * fatorFonte + 24,
+          ),
+          itemBuilder: (context, index) => _RecompensaCard(recompensa: recompensas[index], indice: index),
+        );
+      },
     );
   }
 }
@@ -312,6 +322,7 @@ class _RecompensaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cor = AppColors.categoryAccents[indice % AppColors.categoryAccents.length];
+    final imagem = imagemDaRecompensa(recompensa);
 
     return InkWell(
       borderRadius: BorderRadius.circular(14),
@@ -326,22 +337,34 @@ class _RecompensaCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 78,
-              width: double.infinity,
-              color: cor,
-              alignment: Alignment.center,
-              child: recompensa.disponivel
-                  ? Icon(Icons.card_giftcard, color: Colors.white.withValues(alpha: 0.9), size: 28)
-                  : Text(
-                      'ESGOTADO',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontWeight: FontWeight.w800,
-                        fontSize: 10,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
+            AspectRatio(
+              aspectRatio: recompensaImagemAspectRatio,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (imagem != null)
+                    Image.asset(imagem, fit: BoxFit.cover)
+                  else
+                    ColoredBox(color: cor),
+                  if (!recompensa.disponivel)
+                    ColoredBox(color: imagem != null ? Colors.black54 : Colors.transparent),
+                  Center(
+                    child: recompensa.disponivel
+                        ? (imagem == null
+                              ? Icon(Icons.card_giftcard, color: Colors.white.withValues(alpha: 0.9), size: 28)
+                              : null)
+                        : Text(
+                            'ESGOTADO',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 10,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
